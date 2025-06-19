@@ -23,4 +23,4 @@ public class Grade{
 	System.out.println(Percentage + "% " + "[Grade:F]");
 		}
 	}
-}
+} 
