@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Subway Surfer Clone</title>
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box;}
+    body {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    #gameArea {
+      width: 400px;
+      height: 600px;
+      background: linear-gradient(to top, #333, #666);
+      position: relative;
+      overflow: hidden;
+      border: 5px solid #444;
+    }
+    #player {
+      width: 50px;
+      height: 50px;
+      background: red;
+      position: absolute;
+      bottom: 20px;
+      left: 175px;
+      border-radius: 5px;
+    }
+    .obstacle {
+      width: 50px;
+      height: 50px;
+      background: black;
+      position: absolute;
+      top: -60px;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 20px;
+      z-index: 10;
+    }
+    #gameOver {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 30px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameArea">
+    <div id="score">Score: 0</div>
+    <div id="player"></div>
+    <div id="gameOver">Game Over<br><button onclick="location.reload()" style="padding:10px;margin-top:10px;">Restart</button></div>
+  </div>
+
+  <script>
+    const gameArea = document.getElementById("gameArea");
+    const player = document.getElementById("player");
+    const scoreDisplay = document.getElementById("score");
+    const gameOverText = document.getElementById("gameOver");
+    let score = 0;
+    let gameRunning = true;
+    let playerX = 175;
+
+    document.addEventListener("keydown", function (e) {
+      if (!gameRunning) return;
+      if (e.key === "ArrowLeft" && playerX > 0) {
+        playerX -= 100;
+        player.style.left = playerX + "px";
+      }
+      if (e.key === "ArrowRight" && playerX < 300) {
+        playerX += 100;
+        player.style.left = playerX + "px";
+      }
+    });
+
+    function createObstacle() {
+      if (!gameRunning) return;
+
+      const obstacle = document.createElement("div");
+      obstacle.classList.add("obstacle");
+
+      const lane = Math.floor(Math.random() * 4);
+      obstacle.style.left = lane * 100 + "px";
+      gameArea.appendChild(obstacle);
+
+      let obstacleY = -60;
+      const moveInterval = setInterval(() => {
+        if (!gameRunning) {
+          clearInterval(moveInterval);
+          return;
+        }
+        obstacleY += 5;
+        obstacle.style.top = obstacleY + "px";
+
+        if (obstacleY > 600) {
+          obstacle.remove();
+          clearInterval(moveInterval);
+          score++;
+          scoreDisplay.textContent = "Score: " + score;
+        }
+
+        const playerRect = player.getBoundingClientRect();
+        const obsRect = obstacle.getBoundingClientRect();
+        if (
+          obsRect.top < playerRect.bottom &&
+          obsRect.bottom > playerRect.top &&
+          obsRect.left < playerRect.right &&
+          obsRect.right > playerRect.left
+        ) {
+          gameOver();
+        }
+      }, 20);
+    }
+
+    function gameOver() {
+      gameRunning = false;
+      gameOverText.style.display = "block";
+    }
+
+    setInterval(() => {
+      if (gameRunning) {
+        createObstacle();
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
