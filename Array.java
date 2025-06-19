@@ -11,7 +11,7 @@ myArr[3]= 97;
 myArr[5]= 12;
 myArr[4]= 15;
 myArr[1]= 55;
-System.out.println("Welcome Nikhil's Program");
+System.out.println("Welcome Nikhi-Coder2k25 Program");
 /* or 
 int[] myArr={98,76,87,94,45,91,97,12,15,55}; 
 */
